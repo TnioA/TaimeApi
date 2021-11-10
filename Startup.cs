@@ -46,11 +46,8 @@ namespace TaimeApi
                 endpoints.MapControllers();
             });
 
-            app.UseCors(option => option.AllowAnyOrigin());;
-            // app.UseCors(options =>{
-            //     options.WithOrigins("http://localhost:4200")
-            //         .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-            // });
+            app.UseCors(options => options.AllowAnyMethod().AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true).AllowCredentials());
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>
