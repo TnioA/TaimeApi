@@ -5,26 +5,27 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Reflection;
 using TaimeApi.Extensions;
+using TaimeApi.Services;
 
-namespace TaimeApi.Services
+namespace TaimeApi.Utils.Services
 {
     public class BaseService
     {
         public ResultData SuccessData() => new ResultData(true);
         public ResultData<T> SuccessData<T>(T data) => new ResultData<T>(data);
         public ResultData ErrorData(Enum metaError) => new ErrorData(metaError);
-        public ResultData ErrorData<T>(string metaError) where T : struct => 
+        public ResultData ErrorData<T>(string metaError) where T : struct =>
             new ErrorData<T>(metaError);
-        public ResultData ErrorData<T>(List<string> metaError) where T : struct => 
+        public ResultData ErrorData<T>(List<string> metaError) where T : struct =>
             new ErrorData<T>(metaError);
-        public ResultData ErrorData<TEnum, TRequest>(List<string> metaError) 
-            where TEnum : struct where TRequest : class => 
+        public ResultData ErrorData<TEnum, TRequest>(List<string> metaError)
+            where TEnum : struct where TRequest : class =>
                 new ErrorData<TEnum, TRequest>(metaError);
 
-        public ResultData ErrorData<T>(List<T> metaError) where T : struct => 
+        public ResultData ErrorData<T>(List<T> metaError) where T : struct =>
             new ErrorData<T>(metaError);
-        public ResultData ErrorData<TEnum, TRequest>(List<TEnum> metaError) 
-            where TEnum : struct where TRequest : class => 
+        public ResultData ErrorData<TEnum, TRequest>(List<TEnum> metaError)
+            where TEnum : struct where TRequest : class =>
                 new ErrorData<TEnum, TRequest>(metaError);
     }
 
@@ -48,14 +49,14 @@ namespace TaimeApi.Services
         }
     }
 
-    public class ResultData 
+    public class ResultData
     {
         public virtual bool Success { get; }
 
         public static implicit operator ResultData(Enum error) => new ErrorData(error);
         public static implicit operator ActionResult(ResultData resultData) => HttpHelper.Convert(resultData);
 
-        public ResultData(bool success) 
+        public ResultData(bool success)
         {
             Success = success;
         }
@@ -80,8 +81,8 @@ namespace TaimeApi.Services
         public static implicit operator ResultData<T>(Enum error) => new ResponseErrorData<T>(error);
         public static implicit operator ResultData<T>((Enum, object) error) => new ResponseErrorData<T>(error.Item1, error.Item2);
 
-        public ResultData(): base(false) {}
-        public ResultData(T data): base(true)
+        public ResultData() : base(false) { }
+        public ResultData(T data) : base(true)
         {
             Data = data;
         }
@@ -152,20 +153,21 @@ namespace TaimeApi.Services
             }
         }
 
-        public static void ReplaceMessage(Error dharmaError, object paramReplace)
+        public static void ReplaceMessage(Error error, object paramReplace)
         {
             if (paramReplace != null)
             {
-                if(paramReplace.GetType() == typeof(object[])){
+                if (paramReplace.GetType() == typeof(object[]))
+                {
                     var paramsReplace = (object[])paramReplace;
-                    for (int i = 0; i < paramsReplace.Count() ; i++)
+                    for (int i = 0; i < paramsReplace.Count(); i++)
                     {
-                        dharmaError.Message = dharmaError.Message.Replace($"[{i}]", (paramsReplace[i] ?? "").ToString());
+                        error.Message = error.Message.Replace($"[{i}]", (paramsReplace[i] ?? "").ToString());
                     }
                 }
                 else
                 {
-                    dharmaError.Message = dharmaError.Message.Replace("[0]", (paramReplace ?? "").ToString());
+                    error.Message = error.Message.Replace("[0]", (paramReplace ?? "").ToString());
                 }
             }
         }
@@ -173,7 +175,7 @@ namespace TaimeApi.Services
 
     public class ErrorData<T> : ErrorData where T : struct
     {
-        public ErrorData() : base() {}
+        public ErrorData() : base() { }
 
         public ErrorData(List<string> errorsCode) : base()
         {
@@ -185,9 +187,9 @@ namespace TaimeApi.Services
             BindErrors<T>(new List<string>() { errorCode });
         }
 
-        public ErrorData(Enum errorCode) : base(errorCode) {}
+        public ErrorData(Enum errorCode) : base(errorCode) { }
 
-        public ErrorData(IEnumerable<Enum> errorCodes) : base(errorCodes) {}
+        public ErrorData(IEnumerable<Enum> errorCodes) : base(errorCodes) { }
 
         public ErrorData(T errorCode) : base()
         {
@@ -201,12 +203,12 @@ namespace TaimeApi.Services
 
         public ErrorData(T errorCode, object paramReplace) : base()
         {
-            BindErrors(new [] { errorCode }, paramReplace);
+            BindErrors(new[] { errorCode }, paramReplace);
         }
 
         public ErrorData(string errorCode, object paramReplace) : base()
         {
-            BindErrors<T>(new [] { errorCode }, paramReplace);
+            BindErrors<T>(new[] { errorCode }, paramReplace);
         }
     }
 
@@ -246,12 +248,12 @@ namespace TaimeApi.Services
 
         public ErrorData(string errorCode) : base()
         {
-            BindErrors<TEnum>(new [] { errorCode });
+            BindErrors<TEnum>(new[] { errorCode });
         }
 
         public ErrorData(TEnum errorCode) : base()
         {
-            BindErrors(new [] { errorCode });
+            BindErrors(new[] { errorCode });
         }
 
         public ErrorData(List<TEnum> errorCode) : base()
@@ -261,12 +263,12 @@ namespace TaimeApi.Services
 
         public ErrorData(TEnum errorCode, object paramReplace) : base()
         {
-            BindErrors(new [] { errorCode }, paramReplace);
+            BindErrors(new[] { errorCode }, paramReplace);
         }
 
         public ErrorData(string errorCode, object paramReplace) : base()
         {
-            BindErrors<TEnum>(new [] { errorCode }, paramReplace);
+            BindErrors<TEnum>(new[] { errorCode }, paramReplace);
         }
 
         protected override void BindErrors<T>(IEnumerable<string> errorsCode, object paramReplace = null) where T : struct

@@ -3,11 +3,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TaimeApi.Models;
+using TaimeApi.Data.MySql;
 
 namespace TaimeApi.Migrations
 {
-    [DbContext(typeof(Context))]
+    [DbContext(typeof(MySqlProvider))]
     partial class ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

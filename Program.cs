@@ -11,10 +11,11 @@ namespace TaimeApi
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+            Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+                webBuilder.UseStartup<Startup>()).UseDefaultServiceProvider((context, options) =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
+                    options.ValidateOnBuild = true;
                 });
     }
 }

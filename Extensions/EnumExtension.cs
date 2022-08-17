@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
-using TaimeApi.Services;
+using TaimeApi.Utils.Services;
 
 namespace TaimeApi.Extensions
 {

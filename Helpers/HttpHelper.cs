@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
+using TaimeApi.Utils.Services;
 
 namespace TaimeApi.Services
 {

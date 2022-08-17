@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TaimeApi.Models;
+using TaimeApi.Data.MySql;
 
 namespace TaimeApi.Migrations
 {
-    [DbContext(typeof(Context))]
+    [DbContext(typeof(MySqlProvider))]
     [Migration("20211108013947_InitialCreate")]
     partial class InitialCreate
     {

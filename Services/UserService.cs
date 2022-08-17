@@ -1,41 +1,39 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using TaimeApi.Data.MySql.Entities;
+using TaimeApi.Data.MySql.Repositories;
 using TaimeApi.Enums;
-using TaimeApi.Models;
+using TaimeApi.Utils.Attributes;
+using TaimeApi.Utils.Services;
 
 namespace TaimeApi.Services
 {
+    [InjectionType(InjectionType.Scoped)]
     public class UserService : BaseService
     {
-        private readonly Context _context;
-        public UserService([FromServices] Context context)
+        private readonly UserRepository _userRepository;
+
+        public UserService(UserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
         public async Task<ResultData> GetAll()
         {
-            return SuccessData(await _context.Users.Include(x=> x.AddressList).ToListAsync());
+            var data = await _userRepository.ReadAsync(x=> x.IsAdmin == false);
+            return SuccessData(data);
         }
 
         public async Task<ResultData> GetById(int id)
         {
-            if(id < 1)
+            if (id < 1)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_Invalid_Id);
-                
-            return SuccessData(await _context.Users.Include(x=> x.AddressList)
-                .SingleOrDefaultAsync(x=> x.Id == id));
+
+            return SuccessData(await _userRepository.ReadFirstOrDefaultAsync(x=> x.Id == id));
         }
 
-        public async Task<ResultData> Create(UserModel request)
+        public async Task<ResultData> Create(UserEntity request)
         {
-            _context.Users.Add(request);
-            request.AddressList.ForEach(x=> {
-                _context.Addresses.Add(x);
-            });
-            await _context.SaveChangesAsync();
+            await _userRepository.CreateAsync(request);
             return SuccessData(request);
         }
     }
