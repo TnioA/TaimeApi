@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace TaimeApi.Services
+namespace TaimeApi.Helpers
 {
     public static class EnvLoaderHelper
     {

@@ -27,6 +27,7 @@ namespace TaimeApi.Data.MySql.Entities
         [Column("isAdmin")]
         public bool IsAdmin { get; set; }
 
-        public List<AddressEntity> AddressList { get; set; }
+        [NotMapped]
+        public virtual string Token { get; set; }
     }
 }

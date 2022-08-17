@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TaimeApi.Data.MySql.Entities;
-using TaimeApi.Services;
+using TaimeApi.Helpers;
 using TaimeApi.Utils.Services;
 
 namespace TaimeApi.Controllers.v1

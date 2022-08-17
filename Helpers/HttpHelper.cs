@@ -3,7 +3,7 @@ using System;
 using System.Net;
 using TaimeApi.Utils.Services;
 
-namespace TaimeApi.Services
+namespace TaimeApi.Helpers
 {
     public static class HttpHelper
     {

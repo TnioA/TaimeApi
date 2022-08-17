@@ -1,10 +1,11 @@
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TaimeApi.Data.MySql.Entities;
 using TaimeApi.Services;
+using TaimeApi.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaimeApi.Controllers.v1
 {
@@ -38,10 +39,10 @@ namespace TaimeApi.Controllers.v1
             return HttpHelper.Convert(response);
         }
 
-        [HttpGet("getbyid")]
-        public async Task<IActionResult> GetById([FromQuery] int id)
+        [HttpGet("login")]
+        public async Task<IActionResult> Login([FromQuery] string email, [FromQuery] string password)
         {
-            var response = await _userService.GetById(id);
+            var response = await _userService.Login(email, password);
             return HttpHelper.Convert(response);
         }
 
@@ -49,6 +50,14 @@ namespace TaimeApi.Controllers.v1
         public async Task<IActionResult> Create([FromBody] UserEntity request)
         {
             var response = await _userService.Create(request);
+            return HttpHelper.Convert(response);
+        }
+
+        [HttpPost("remove")]
+        [Authorize(Roles = "Admin")] // deve ser adicionado as regras aceitas separados por virgula exemplo [Authorize(Roles = "Regra1,Regra2,Regra3")]
+        public async Task<IActionResult> Remove([FromQuery] int id)
+        {
+            var response = await _userService.Remove(id);
             return HttpHelper.Convert(response);
         }
     }
