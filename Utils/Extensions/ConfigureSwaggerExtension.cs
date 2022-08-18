@@ -10,14 +10,11 @@ namespace TaimeApi.Utils.Extensions
     {
         private readonly IApiVersionDescriptionProvider _provider;
 
-        public ConfigureSwaggerExtension(IApiVersionDescriptionProvider provider)
-        {
+        public ConfigureSwaggerExtension(IApiVersionDescriptionProvider provider) =>
             _provider = provider;
-        }
-
+        
         public void Configure(SwaggerGenOptions options)
         {
-            // add swagger document for every API version discovered
             foreach (var description in _provider.ApiVersionDescriptions)
             {
                 options.SwaggerDoc(description.GroupName,CreateVersionInfo(description));
@@ -31,17 +28,10 @@ namespace TaimeApi.Utils.Extensions
 
         private OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
         {
-            var info = new OpenApiInfo()
-            {
-                Title = "Taime API",
-                Version = description.ApiVersion.ToString()
-            };
-
+            var info = new OpenApiInfo() { Title = "Taime API", Version = description.ApiVersion.ToString() };
             if (description.IsDeprecated)
-            {
                 info.Description += " This API version has been deprecated.";
-            }
-
+            
             return info;
         }
     }

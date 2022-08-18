@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Text;
 using TaimeApi.Data.MySql.Entities;
 using TaimeApi.Settings;
-using TaimeApi.Utils.Helpers;
 
 namespace TaimeApi.Helpers
 {

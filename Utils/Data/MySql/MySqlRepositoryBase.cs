@@ -56,7 +56,6 @@ namespace TaimeApi.Utils.Data.MySql
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
-            //await _context.AddAsync(entity).ConfigureAwait(false);
             var data = await _context.AddAsync(entity);
             await _provider.SaveChangesAsync();
             return data.Entity;
@@ -64,7 +63,6 @@ namespace TaimeApi.Utils.Data.MySql
 
         public virtual async Task CreateRangeAsync(IEnumerable<TEntity> entities)
         {
-            //await _context.AddRangeAsync(entities).ConfigureAwait(false);
             await _context.AddRangeAsync(entities);
             await _provider.SaveChangesAsync();
         }

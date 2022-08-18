@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using static System.Runtime.InteropServices.RuntimeInformation;
 
 namespace TaimeApi.Utils.Helpers
 {
@@ -12,63 +10,38 @@ namespace TaimeApi.Utils.Helpers
     /// </summary>
     public static class ReflectionHelper
     {
-        private static readonly HashSet<Type> _types;
-
         internal static readonly HashSet<Assembly> Assemblies;
+        private static readonly HashSet<Type> _types;
 
         static ReflectionHelper()
         {
             Assemblies = new HashSet<Assembly>(GetLocalAssemblies());
-
             _types = new HashSet<Type>(Assemblies.SelectMany(t => t.GetTypes()).ToArray());
         }
 
         /// <summary>
         /// Lista todas as classes do Assembly que implementam a interface informada.
         /// </summary>
-        /// <param name="interfaceType">Interface implementada pelos tipos.</param>
-        /// <returns>Lista de tipos implementam a interface.</returns>
-        public static IEnumerable<Type> ListClassesImplements(Type interfaceType)
-        {
-            return _types
-                .Where(t => t.GetInterfaces().Contains(interfaceType));
-        }
+        public static IEnumerable<Type> ListClassesImplements(Type interfaceType) =>
+            _types.Where(t => t.GetInterfaces().Contains(interfaceType));
 
         /// <summary>
-        /// Lista todas as classes do Assembly que implementam a interface informada.
+        /// Lista todas as classes genéricas do Assembly que implementam a interface informada.
         /// </summary>
-        /// <param name="interfaceType">Interface implementada pelos tipos.</param>
-        /// <returns>Lista de tipos implementam a interface.</returns>
-        public static IEnumerable<Type> ListClassesImplementsFromGeneric(Type interfaceType)
-        {
-            return _types
-                .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == interfaceType));
-        }
-
-        /// <summary>
-        /// Lista todas as classes do Assembly que herdam de um tipo genérico.
-        /// </summary>
-        /// <param name="type">Tipo do genérico que será buscado as classes que o herdam.</param>
-        /// <returns>Lista de tipos que herdam o genérico.</returns>
-        public static IEnumerable<Type> ListClassesInheritFromGeneric(Type type)
-        {
-            return _types
-                .Where(t =>
-                    t.BaseType != null
-                    && t.BaseType.IsGenericType
-                    && t.BaseType.GetGenericTypeDefinition() == type);
-        }
+        public static IEnumerable<Type> ListClassesImplementsFromGeneric(Type interfaceType) =>
+            _types.Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == interfaceType));
 
         /// <summary>
         /// Lista todas as classes do Assembly que herdam de um tipo
         /// </summary>
-        /// <param name="type">Tipo que será buscado as classes que o herdam.</param>
-        /// <returns>Lista de tipos que herdam</returns>
-        public static IEnumerable<Type> ListClassesInherit(Type type)
-        {
-            return _types
-                .Where(t => IsInherit(t, type));
-        }
+        public static IEnumerable<Type> ListClassesInherit(Type type) =>
+            _types.Where(t => IsInherit(t, type));
+
+        /// <summary>
+        /// Lista todas as classes do Assembly que herdam de um tipo genérico.
+        /// </summary>
+        public static IEnumerable<Type> ListClassesInheritFromGeneric(Type type) =>
+            _types.Where(t => t.BaseType != null && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == type);
 
         private static bool IsInherit(Type type, Type baseTypeExpected)
         {
@@ -79,16 +52,6 @@ namespace TaimeApi.Utils.Helpers
                 return true;
 
             return IsInherit(type.BaseType, baseTypeExpected);
-        }
-
-        /// <summary>
-        /// Lista todas as classes do Assembly que herdam de um tipo.
-        /// </summary>
-        /// <param name="type">Tipo do genérico que será buscado as classes que o herdam.</param>
-        /// <returns>Lista de tipos que herdam o genérico.</returns>
-        public static IEnumerable<Type> ListClassesInheritFromType(Type type)
-        {
-            return _types.Where(t => t.BaseType != null && t.BaseType == type);
         }
 
         public static IEnumerable<Assembly> GetLocalAssemblies()
@@ -120,27 +83,12 @@ namespace TaimeApi.Utils.Helpers
                 }
             }
 
-            //var dharma = result.SelectMany(x => x.GetReferencedAssemblies()).Where(i => i.FullName.StartsWith("Dharma")).Select(i => Assembly.Load(i)).ToList();
-            //result.AddRange(dharma);
-
-            //if (ApplicationHelper.MicroServiceName() == ApplicationHelper.TESTAPPLICATION)
-            //{
-            //    var testAppName = ApplicationHelper.TestApplicationName();
-
-            //    if (!IsOSPlatform(OSPlatform.Windows))
-            //    {
-            //        testAppName = testAppName.Substring(testAppName.LastIndexOf("/", StringComparison.Ordinal)).TrimStart('/');
-            //    }
-
-            //    result.AddRange(assemblies.Where(x => x.FullName.StartsWith(testAppName)));
-            //}
-
             return result.Distinct();
         }
 
-        /// <summary>Determina se o tipo é instanciável.</summary>
-        /// <param name="type">O tipo para testar.</param>
-        /// <returns><c>true</c> se o tipo é instanciável; senão, <c>false</c>.</returns>
+        /// <summary>
+        /// Verifica se o tipo é instanciavel
+        /// </summary>
         public static bool IsConcrete(this Type type)
         {
             return !type.IsAbstract &&

@@ -16,10 +16,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using TaimeApi.Data.MySql;
-using TaimeApi.Enums;
 using TaimeApi.Helpers;
 using TaimeApi.Settings;
+using TaimeApi.Utils.Data.Api;
 using TaimeApi.Utils.Extensions;
 using TaimeApi.Utils.Helpers;
 
@@ -39,30 +38,25 @@ namespace TaimeApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Set minimum threads
+            // Set Minimum Threads
             int minimunWorker, minimunIOC;
             ThreadPool.GetMinThreads(out minimunWorker, out minimunIOC);
             ThreadPool.SetMinThreads(250, minimunWorker);
 
+            // Set Data Services
             AddDataBaseRepositories(services);
             AddApiCallRepositories(services);
-            services.AddControllers();
-            var settings = new AppSettings();
-            services.AddSingleton(settings);
-
             if (!services.ExistServiceType<IHttpContextAccessor>())
                 services.AddHttpContextAccessor();
 
-            // INJETANDO SERVICES OBS: VERIFICAR SE É A FORMA CORRETA
-            //var allProviderTypes = System.Reflection.Assembly.GetExecutingAssembly()
-            //    .GetTypes().Where(t => t.Name != null && t.Name.Contains("Service"));
+            // Set Controllers
+            services.AddControllers();
 
-            //foreach (var intfc in allProviderTypes.Where(t => t.IsClass))
-            //{
-            //    var impl = allProviderTypes.FirstOrDefault(c => c.IsClass && intfc.Name == c.Name);
-            //    if (impl != null) services.AddScoped(intfc, impl);
-            //}
+            // Set Settings
+            var settings = new AppSettings();
+            services.AddSingleton(settings);
 
+            // Set Authentication
             var key = Encoding.ASCII.GetBytes(settings.JWTAuthorizationToken);
             services.AddAuthentication(configureOptions =>
             {
@@ -80,22 +74,19 @@ namespace TaimeApi
                 };
             });
 
-            // adding versioning
+            // Set Api Versioning
             services.AddApiVersioning(setup =>
             {
                 setup.ReportApiVersions = true;
                 setup.AssumeDefaultVersionWhenUnspecified = true;
                 setup.DefaultApiVersion = new ApiVersion(1, 0);
-            });
-
-            services.AddVersionedApiExplorer(options =>
+            }).AddVersionedApiExplorer(options =>
             {
-
                 options.GroupNameFormat = "'v'VVV";
                 options.SubstituteApiVersionInUrl = true;
             });
 
-            // add swagger
+            // Set Documentation
             services.AddSwaggerGen(options =>
             {
                 OpenApiSecurityScheme openApiSecurityScheme = new OpenApiSecurityScheme
@@ -108,13 +99,12 @@ namespace TaimeApi
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "oauth2"
                 };
+
                 options.AddSecurityDefinition("Bearer", openApiSecurityScheme);
-                //options.AddSecurityRequirement(new OpenApiSecurityRequirement { openApiSecurityScheme, new string[0] });
             });
             services.ConfigureOptions<ConfigureSwaggerExtension>();
 
-
-            // auto inject services
+            // Set Auto Inject Services
             services.AddBaseServices();
         }
 
@@ -122,9 +112,8 @@ namespace TaimeApi
 
         #region [Configure App]
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
-            InjectionHelper.SetProvider(app.ApplicationServices);
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseSwagger();
@@ -133,7 +122,6 @@ namespace TaimeApi
                 options.RoutePrefix = string.Empty;
                 options.ConfigObject.DisplayRequestDuration = true;
                 options.DocumentTitle = "Swagger - " + GetSwaggerApplicationName();
-                IApiVersionDescriptionProvider provider = InjectionHelper.GetService<IApiVersionDescriptionProvider>();
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
                     options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
@@ -165,12 +153,11 @@ namespace TaimeApi
         {
             services.AddHttpClient();
 
-            //var all = ReflectionHelper.ListClassesInherit(typeof(HTTPApiCallRepository));
-
-            //foreach (var item in all)
-            //{
-            //    services.AddDynamicScope(item);
-            //}
+            var all = ReflectionHelper.ListClassesInherit(typeof(HTTPApiCallRepository));
+            foreach (var item in all)
+            {
+                services.AddDynamicScope(item);
+            }
         }
 
         public static string GetValueFromEnv(string keyName, bool throwException = true, [CallerMemberName] string section = "unknown")

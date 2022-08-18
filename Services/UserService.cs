@@ -15,6 +15,7 @@ namespace TaimeApi.Services
     {
         private readonly UserRepository _userRepository;
         private readonly AppSettings _settings;
+
         public UserService(UserRepository userRepository, AppSettings settings)
         {
             _userRepository = userRepository;

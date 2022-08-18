@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using TaimeApi.Data.MySql.Entities;
 using TaimeApi.Data.MySql.Repositories;
-using TaimeApi.Enums;
 using TaimeApi.Utils.Attributes;
 using TaimeApi.Utils.Services;
 
