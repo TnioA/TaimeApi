@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using TaimeApi.Data.MySql.Entities;
 
 namespace TaimeApi.Data.MySql

@@ -33,6 +33,9 @@ namespace TaimeApi.Controllers.v1
         }
 
         [HttpPost("create")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
         public async Task<IActionResult> Create([FromBody] AppointmentEntity request)
         {
             var response = await _appointmentService.Create(request);

@@ -40,6 +40,9 @@ namespace TaimeApi.Controllers.v1
         }
 
         [HttpGet("login")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
         public async Task<IActionResult> Login([FromQuery] string email, [FromQuery] string password)
         {
             var response = await _userService.Login(email, password);
@@ -47,6 +50,9 @@ namespace TaimeApi.Controllers.v1
         }
 
         [HttpPost("create")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
         public async Task<IActionResult> Create([FromBody] UserEntity request)
         {
             var response = await _userService.Create(request);
@@ -55,6 +61,9 @@ namespace TaimeApi.Controllers.v1
 
         [HttpPost("remove")]
         [Authorize(Roles = "Admin")] // deve ser adicionado as regras aceitas separados por virgula exemplo [Authorize(Roles = "Regra1,Regra2,Regra3")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
         public async Task<IActionResult> Remove([FromQuery] int id)
         {
             var response = await _userService.Remove(id);
