@@ -1,8 +1,8 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using TaimeApi.Helpers;
-using TaimeApi.Utils.Services;
+using TaimeApi.Application.Helpers;
+using TaimeApi.Application.Utils.Services;
 
 namespace TaimeApi.Controllers.v1
 {

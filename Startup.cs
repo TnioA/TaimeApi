@@ -16,11 +16,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using TaimeApi.Helpers;
-using TaimeApi.Settings;
-using TaimeApi.Utils.Data.Api;
-using TaimeApi.Utils.Extensions;
-using TaimeApi.Utils.Helpers;
+using TaimeApi.Application.Helpers;
+using TaimeApi.Application.Settings;
+using TaimeApi.Application.Utils.Data.Api;
+using TaimeApi.Application.Utils.Extensions;
+using TaimeApi.Application.Utils.Helpers;
 
 namespace TaimeApi
 {
@@ -134,7 +134,6 @@ namespace TaimeApi
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-            //app.UseCors(options => options.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials());
         }
 
         #endregion
@@ -143,7 +142,7 @@ namespace TaimeApi
 
         protected virtual void AddDataBaseRepositories(IServiceCollection services)
         {
-            services.AddMySql(GetValueFromEnv<string>("KEY_MYSQL_CONN_STR"));
+            services.AddMySql(EnvLoaderHelper.GetValueFromEnv<string>("KEY_MYSQL_CONN_STR"));
 
             var appSettings = new AppSettings();
             services.AddSingleton(appSettings);
@@ -158,50 +157,6 @@ namespace TaimeApi
             {
                 services.AddDynamicScope(item);
             }
-        }
-
-        public static string GetValueFromEnv(string keyName, bool throwException = true, [CallerMemberName] string section = "unknown")
-        {
-            if (string.IsNullOrWhiteSpace(keyName))
-            {
-                throw new ArgumentNullException(nameof(keyName), "Informe um nome de chave.");
-            }
-
-            return GetEnvironmentVariable(keyName, "keyname", throwException, section);
-        }
-
-        public static T GetValueFromEnv<T>(string keyName, bool throwException = true, [CallerMemberName] string section = "unknown")
-        {
-            if (string.IsNullOrWhiteSpace(keyName))
-            {
-                throw new ArgumentNullException(nameof(keyName), "Informe um nome de chave.");
-            }
-
-            var value = GetEnvironmentVariable(keyName, "keyname", throwException, section);
-
-            if (!string.IsNullOrWhiteSpace(value))
-                return (T)Convert.ChangeType(value, typeof(T));
-
-            return default;
-        }
-
-        public static string GetEnvironmentVariable(string envName, string paramName, bool throwException = true, [CallerMemberName] string section = "unknown")
-        {
-            if (string.IsNullOrWhiteSpace(envName))
-            {
-                throw new ArgumentOutOfRangeException(paramName,
-                    $"{section}: o parâmetro '{paramName}' deve ser informado (não pode ser vazio ou nulo).");
-            }
-
-            var value = Environment.GetEnvironmentVariable(envName);
-
-            if (string.IsNullOrWhiteSpace(value) && throwException)
-            {
-                throw new ArgumentOutOfRangeException(paramName,
-                    $"{section}: não existe ou está vazio o valor para a variável de ambiente '{envName}'.");
-            }
-
-            return value;
         }
 
         public virtual string GetSwaggerApplicationName()

@@ -5,6 +5,14 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaimeApi", "TaimeApi.csproj", "{E352089F-2FF9-4933-B6A9-1B7AA55515EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "..\Application\Application.csproj", "{BED0B3E9-7CCF-43CC-9C78-153DB2016BBC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{C4881B37-A504-4A7C-A86B-904FB6E83744}"
+	ProjectSection(SolutionItems) = preProject
+		.env = .env
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,10 @@ Global
 		{E352089F-2FF9-4933-B6A9-1B7AA55515EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E352089F-2FF9-4933-B6A9-1B7AA55515EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E352089F-2FF9-4933-B6A9-1B7AA55515EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BED0B3E9-7CCF-43CC-9C78-153DB2016BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED0B3E9-7CCF-43CC-9C78-153DB2016BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED0B3E9-7CCF-43CC-9C78-153DB2016BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED0B3E9-7CCF-43CC-9C78-153DB2016BBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

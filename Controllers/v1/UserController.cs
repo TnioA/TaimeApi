@@ -2,9 +2,9 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using TaimeApi.Data.MySql.Entities;
-using TaimeApi.Services;
-using TaimeApi.Helpers;
+using TaimeApi.Application.Data.MySql.Entities;
+using TaimeApi.Application.Services;
+using TaimeApi.Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
 namespace TaimeApi.Controllers.v1
