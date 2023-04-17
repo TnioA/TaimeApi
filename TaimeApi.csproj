@@ -6,6 +6,10 @@
     <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove=".env" />
+    <None Remove=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 </Project>
