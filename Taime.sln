@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F58B0FDB-968E-4633-AD67-41FDDC5CF573}"
+	ProjectSection(SolutionItems) = preProject
+		.env = .env
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taime.Application", "Taime.Application\Taime.Application.csproj", "{3619DCE0-1161-4A59-99B4-E60DF2A8113B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taime.API", "Taime.API\Taime.API.csproj", "{3702770F-AA09-46AE-A29A-D0383C83FD1B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3619DCE0-1161-4A59-99B4-E60DF2A8113B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3619DCE0-1161-4A59-99B4-E60DF2A8113B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3619DCE0-1161-4A59-99B4-E60DF2A8113B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3619DCE0-1161-4A59-99B4-E60DF2A8113B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3702770F-AA09-46AE-A29A-D0383C83FD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3702770F-AA09-46AE-A29A-D0383C83FD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3702770F-AA09-46AE-A29A-D0383C83FD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3702770F-AA09-46AE-A29A-D0383C83FD1B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CFA49A8-32D1-4F2A-BA38-7C30808BF974}
+	EndGlobalSection
+EndGlobal
