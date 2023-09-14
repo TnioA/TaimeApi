@@ -6,6 +6,7 @@ using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Services;
 using Taime.Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Taime.Application.Contracts;
 
 namespace Taime.API.Controllers.v1
 {
@@ -46,9 +47,9 @@ namespace Taime.API.Controllers.v1
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
-        public async Task<IActionResult> Login([FromQuery] string email, [FromQuery] string password)
+        public async Task<IActionResult> Login([FromQuery] LoginRequest request)
         {
-            var response = await _userService.Login(email, password);
+            var response = await _userService.Login(request);
             return HttpHelper.Convert(response);
         }
 

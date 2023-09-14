@@ -1,12 +1,15 @@
 using System.Threading.Tasks;
+using Taime.Application.Contracts;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
 using Taime.Application.Enums;
+using Taime.Application.Extensions;
 using Taime.Application.Helpers;
 using Taime.Application.Settings;
 using Taime.Application.Utils.Attributes;
 using Taime.Application.Utils.Helpers;
 using Taime.Application.Utils.Services;
+using Taime.Application.Validators;
 
 namespace Taime.Application.Services
 {
@@ -28,19 +31,19 @@ namespace Taime.Application.Services
             return SuccessData(data);
         }
 
-        public async Task<ResultData> Login(string email, string password)
+        public async Task<ResultData> Login(LoginRequest request)
         {
-            if (email == null || password == null)
-                return ErrorData(TaimeApiErrors.TaimeApi_Post_400_Invalid_Login);
+            var validationResult = new LoginRequestValidator().Validate(request);
+            if (!validationResult.IsValid)
+                return ErrorData<TaimeApiErrors>(validationResult.Errors[0].ErrorCode);
 
-            UserEntity user = await _userRepository.ReadFirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+            UserEntity user = await _userRepository.ReadFirstOrDefaultAsync(x => x.Email == request.Email && x.Password == request.Password);
             if (user == null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_User_Not_Finded);
 
             user.Password = null;
-            user.Token = AuthorizationHelper.GenerateToken(user, _settings);
 
-            return SuccessData(user);
+            return SuccessData(AuthorizationHelper.GenerateToken(user, _settings));
         }
 
         public async Task<ResultData> Create(UserEntity request)

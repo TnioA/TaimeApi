@@ -1,8 +1,8 @@
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Taime.Application.Contracts;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Settings;
 
@@ -10,7 +10,7 @@ namespace Taime.Application.Helpers
 {
     public static class AuthorizationHelper
     {
-        public static string GenerateToken(UserEntity userEntity, AppSettings settings)
+        public static TokenResponse GenerateToken(UserEntity userEntity, AppSettings settings)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(settings.JWTAuthorizationToken);
@@ -26,7 +26,14 @@ namespace Taime.Application.Helpers
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var tokenResult = new TokenResponse()
+            {
+                AccessToken = tokenHandler.WriteToken(token),
+                ExpiresIn = settings.JWTTokenExpirationTime,
+                TokenType = "Bearer"
+            };
+
+            return tokenResult;
         }
     }
 }
