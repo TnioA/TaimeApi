@@ -129,9 +129,6 @@ app.Run();
 void AddDataBaseRepositories(IServiceCollection services)
 {
     services.AddMySql(GetValueFromEnv<string>("KEY_MYSQL_CONN_STR"));
-
-    var appSettings = new AppSettings();
-    services.AddSingleton(appSettings);
 }
 
 void AddApiCallRepositories(IServiceCollection services)
