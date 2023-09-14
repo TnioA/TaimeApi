@@ -109,7 +109,7 @@ app.UseSwaggerUI(options =>
 {
     options.RoutePrefix = string.Empty;
     options.ConfigObject.DisplayRequestDuration = true;
-    options.DocumentTitle = "Swagger - " + GetSwaggerApplicationName();
+    options.DocumentTitle = "Swagger - " + PlatformServices.Default.Application.ApplicationName.Split(".")[0];
     foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
     {
         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
@@ -151,15 +151,4 @@ void AddApiCallRepositories(IServiceCollection services)
     {
         services.AddDynamicScope(item);
     }
-}
-
-
-
-string GetSwaggerApplicationName()
-{
-    var applicationName = PlatformServices.Default.Application.ApplicationName;
-
-    applicationName = applicationName.Split(".")[0];
-
-    return applicationName;
 }
