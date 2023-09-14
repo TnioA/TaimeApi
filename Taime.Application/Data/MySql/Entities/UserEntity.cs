@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Taime.Application.Utils.Data.MySql;
@@ -26,8 +25,5 @@ namespace Taime.Application.Data.MySql.Entities
 
         [Column("isAdmin")]
         public bool IsAdmin { get; set; }
-
-        [NotMapped]
-        public virtual string Token { get; set; }
     }
 }

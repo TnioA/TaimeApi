@@ -1,15 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.IO;
 using System.Reflection;
-using System;
 using System.Text;
 using Taime.Application.Settings;
 using Taime.Application.Utils.Data.Api;
@@ -18,8 +13,6 @@ using Taime.Application.Utils.Helpers;
 using static Taime.Application.Helpers.EnvLoaderHelper;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 // Load Envs
 Load();
@@ -30,8 +23,13 @@ AddApiCallRepositories(builder.Services);
 if (!builder.Services.ExistServiceType<IHttpContextAccessor>())
     builder.Services.AddHttpContextAccessor();
 
-// Set Controllers
+// Set Controllers / configuring routes
 builder.Services.AddControllers();
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
+});
 
 // Set Settings
 var settings = new AppSettings();
@@ -102,15 +100,13 @@ builder.Services.AddBaseServices();
 
 var app = builder.Build();
 
-var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.RoutePrefix = string.Empty;
     options.ConfigObject.DisplayRequestDuration = true;
     options.DocumentTitle = "Swagger - " + PlatformServices.Default.Application.ApplicationName.Split(".")[0];
-    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    foreach (var description in app.Services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions)
     {
         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
     }
@@ -118,13 +114,9 @@ app.UseSwaggerUI(options =>
 
 app.UseCors(builder => builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 app.MapControllers();
-
 app.Run();
 
 

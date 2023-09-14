@@ -5,8 +5,8 @@ using Taime.Application.Utils.Data.MySql;
 namespace Taime.Application.Data.MySql.Repositories
 {
     [InjectionType(InjectionType.Scoped)]
-    public class AppointmentRepository : MySqlRepositoryBase<AppointmentEntity>
+    public class ProductRepository : MySqlRepositoryBase<ProductEntity>
     {
-        public AppointmentRepository(MySqlProvider mySqlProvider) : base(mySqlProvider) { }
+        public ProductRepository(MySqlProvider mySqlProvider) : base(mySqlProvider) { }
     }
 }

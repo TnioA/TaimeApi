@@ -1,12 +1,11 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Taime.Application.Utils.Data.MySql;
 
 namespace Taime.Application.Data.MySql.Entities
 {
-    [Table("appointment")]
-    public class AppointmentEntity : MySqlEntityBase
+    [Table("product")]
+    public class ProductEntity : MySqlEntityBase
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
@@ -14,8 +13,5 @@ namespace Taime.Application.Data.MySql.Entities
 
         [Column("description")]
         public string Description { get; set; }
-
-        [Column("userId")]
-        public int UserId { get; set; }
     }
 }

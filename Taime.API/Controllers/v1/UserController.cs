@@ -43,16 +43,6 @@ namespace Taime.API.Controllers.v1
             return HttpHelper.Convert(response);
         }
 
-        [HttpGet("login")]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
-        public async Task<IActionResult> Login([FromQuery] LoginRequest request)
-        {
-            var response = await _userService.Login(request);
-            return HttpHelper.Convert(response);
-        }
-
         [HttpPost("create")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
@@ -71,6 +61,16 @@ namespace Taime.API.Controllers.v1
         public async Task<IActionResult> Remove([FromQuery] int id)
         {
             var response = await _userService.Remove(id);
+            return HttpHelper.Convert(response);
+        }
+
+        [HttpGet("login")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        public async Task<IActionResult> Login([FromQuery] LoginRequest request)
+        {
+            var response = await _userService.Login(request);
             return HttpHelper.Convert(response);
         }
     }

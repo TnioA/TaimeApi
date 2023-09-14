@@ -21,6 +21,12 @@ namespace Taime.Application.Enums
         /// Usuário não encontrado.
         /// </summary>
         [Description("Usuário não encontrado.")]
-        TaimeApi_Post_400_User_Not_Finded
+        TaimeApi_Post_400_User_Not_Found,
+
+        /// <summary>
+        /// Produto não encontrado.
+        /// </summary>
+        [Description("Produto não encontrado.")]
+        TaimeApi_Post_400_Product_Not_Found
     }
 }
