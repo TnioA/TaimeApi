@@ -7,6 +7,6 @@ namespace Taime.Application.Data.MySql.Repositories
     [InjectionType(InjectionType.Scoped)]
     public class ProductRepository : MySqlRepositoryBase<ProductEntity>
     {
-        public ProductRepository(MySqlProvider mySqlProvider) : base(mySqlProvider) { }
+        public ProductRepository(MySqlContext mySqlContext) : base(mySqlContext) { }
     }
 }

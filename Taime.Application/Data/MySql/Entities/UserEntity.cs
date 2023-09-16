@@ -20,10 +20,7 @@ namespace Taime.Application.Data.MySql.Entities
         [Column("password")]
         public string Password { get; set; }
 
-        [Column("phone")]
-        public string Phone { get; set; }
-
-        [Column("isAdmin")]
+        [Column("is_admin")]
         public bool IsAdmin { get; set; }
     }
 }

@@ -7,6 +7,6 @@ namespace Taime.Application.Data.MySql.Repositories
     [InjectionType(InjectionType.Scoped)]
     public class UserRepository : MySqlRepositoryBase<UserEntity>
     {
-        public UserRepository(MySqlProvider mySqlProvider) : base(mySqlProvider) { }
+        public UserRepository(MySqlContext mySqlContext) : base(mySqlContext) { }
     }
 }

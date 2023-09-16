@@ -6,22 +6,23 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using Taime.Application.Data.MySql;
 using Taime.Application.Settings;
-using Taime.Application.Utils.Data.Api;
 using Taime.Application.Utils.Extensions;
-using Taime.Application.Utils.Helpers;
 using static Taime.Application.Helpers.EnvLoaderHelper;
 
+// App Configuration
 var builder = WebApplication.CreateBuilder(args);
 
 // Load Envs
 Load();
 
-// Set Data Services
-AddDataBaseRepositories(builder.Services);
-AddApiCallRepositories(builder.Services);
-if (!builder.Services.ExistServiceType<IHttpContextAccessor>())
-    builder.Services.AddHttpContextAccessor();
+//Set Data Services
+builder.Services.AddApiCallRepositories();
+builder.Services.AddMySql(GetValueFromEnv<string>("KEY_MYSQL_CONN_STR"));
+
+// Set Auto Inject Services
+builder.Services.AddBaseServices();
 
 // Set Controllers / configuring routes
 builder.Services.AddControllers();
@@ -75,31 +76,25 @@ builder.Services.AddSwaggerGen(options =>
         Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "",
+        Description = "Por favor insira no campo o token JWT com Bearer.",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "oauth2"
     };
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
     options.AddSecurityDefinition("Bearer", openApiSecurityScheme);
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    {
+        openApiSecurityScheme,
+        Array.Empty<string>()
+    } });
 });
 builder.Services.ConfigureOptions<ConfigureSwaggerExtension>();
 
-// Set Auto Inject Services
-builder.Services.AddBaseServices();
-
-
-
-
-
-
-
-
-
-
-
+// App Configuration
 var app = builder.Build();
 
+// Add SwaggerUi
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -117,27 +112,12 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Creating tables
+using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetRequiredService<MySqlContext>();
+    context.Database.EnsureCreated();
+}
+
 app.Run();
-
-
-
-
-
-
-
-
-void AddDataBaseRepositories(IServiceCollection services)
-{
-    services.AddMySql(GetValueFromEnv<string>("KEY_MYSQL_CONN_STR"));
-}
-
-void AddApiCallRepositories(IServiceCollection services)
-{
-    services.AddHttpClient();
-
-    var all = ReflectionHelper.ListClassesInherit(typeof(HTTPApiCallRepository));
-    foreach (var item in all)
-    {
-        services.AddDynamicScope(item);
-    }
-}

@@ -12,6 +12,9 @@ namespace Taime.Application.Validators
 
             RuleFor(x => x.Email)
                 .Must(x => !string.IsNullOrEmpty(x))
+                .WithErrorCode(TaimeApiErrors.TaimeApi_Post_400_Invalid_Login.ToString());
+
+            RuleFor(x => x.Email)
                 .EmailAddress()
                 .WithErrorCode(TaimeApiErrors.TaimeApi_Post_400_Invalid_Login.ToString());
 

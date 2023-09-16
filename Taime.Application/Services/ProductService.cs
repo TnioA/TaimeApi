@@ -24,7 +24,10 @@ namespace Taime.Application.Services
 
         public async Task<ResultData> GetById(int id)
         {
-            var data = await _productRepository.ReadAsync(x => x.Id == id);
+            var data = await _productRepository.ReadFirstOrDefaultAsync(x => x.Id == id);
+            if (data == null)
+                return ErrorData(TaimeApiErrors.TaimeApi_Post_400_Product_Not_Found);
+
             return SuccessData(data);
         }
 

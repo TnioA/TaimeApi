@@ -1,6 +1,6 @@
 ﻿namespace Taime.Application.Utils.Data.MySql
 {
-    public class MySqlEntityBase
+    public abstract class MySqlEntityBase
     {
 
     }

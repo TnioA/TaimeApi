@@ -30,12 +30,19 @@ namespace Taime.Application.Services
 
         public async Task<ResultData> GetById(int id)
         {
-            var data = await _userRepository.ReadAsync(x => x.Id == id);
+            var data = await _userRepository.ReadFirstOrDefaultAsync(x => x.Id == id);
+            if (data == null)
+                return ErrorData(TaimeApiErrors.TaimeApi_Post_400_User_Not_Found);
+
             return SuccessData(data);
         }
 
         public async Task<ResultData> Create(UserEntity request)
         {
+            UserEntity user = await _userRepository.ReadFirstOrDefaultAsync(x => x.Email == request.Email);
+            if (user == null)
+                return ErrorData(TaimeApiErrors.TaimeApi_Post_400_User_Already_Exists);
+
             await _userRepository.CreateAsync(request);
             return SuccessData();
         }

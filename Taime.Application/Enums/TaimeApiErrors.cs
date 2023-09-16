@@ -24,6 +24,12 @@ namespace Taime.Application.Enums
         TaimeApi_Post_400_User_Not_Found,
 
         /// <summary>
+        /// Já existe um usuário para o e-mail informado.
+        /// </summary>
+        [Description("Já existe um usuário para o e-mail informado.")]
+        TaimeApi_Post_400_User_Already_Exists,
+
+        /// <summary>
         /// Produto não encontrado.
         /// </summary>
         [Description("Produto não encontrado.")]

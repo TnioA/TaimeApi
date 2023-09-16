@@ -1,11 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Taime.Application.Data.MySql;
-using Taime.Application.Utils.Attributes;
+using Taime.Application.Utils.Data.Api;
 using Taime.Application.Utils.Data.MySql;
 using Taime.Application.Utils.Helpers;
 using Taime.Application.Utils.Services;
@@ -17,21 +14,38 @@ namespace Taime.Application.Utils.Extensions
         public static IServiceCollection AddBaseServices(this IServiceCollection services)
         {
             IEnumerable<Type> enumerable = ReflectionHelper.ListClassesInherit(typeof(BaseService));
-            foreach (var item in enumerable)
+            foreach (Type type in enumerable)
             {
-                services.AddDynamicScope(item);
+                services.AddScoped(type);
             }
 
-            Type repositoryType = typeof(IRepositoryBase<>);
-            IEnumerable<Type> enumerable2 = from t in ReflectionHelper.ListClassesImplementsFromGeneric(repositoryType) where t.IsConcrete() select t;
-            foreach (var item in enumerable2)
+            return services;
+        }
+
+        public static IServiceCollection AddMySql(this IServiceCollection services, string mySqlContextStr)
+        {
+            services.AddDbContext<MySqlContext>(options => options.UseMySql(mySqlContextStr, ServerVersion.AutoDetect(mySqlContextStr)));
+
+            var repositories = ReflectionHelper.ListClassesInherit(typeof(RepositoryBase));
+            foreach (Type repository in repositories)
             {
-                Type serviceType = item.GetInterfaces().FirstOrDefault((i) => i.IsGenericType && i.GetGenericTypeDefinition() == repositoryType);
-                InjectionType injectionType = GetInjectionType(item);
-                if (injectionType == InjectionType.Scoped)
-                    services.AddScoped(serviceType, item);
-                else
-                    services.AddSingleton(serviceType, item);
+                services.AddScoped(repository);
+            }
+
+            return services;
+        }
+
+        public static IServiceCollection AddApiCallRepositories(this IServiceCollection services)
+        {
+            if (!services.ExistServiceType<IHttpContextAccessor>())
+                services.AddHttpContextAccessor();
+
+            services.AddHttpClient();
+
+            var repositories = ReflectionHelper.ListClassesInherit(typeof(HTTPApiCallRepository));
+            foreach (Type repository in repositories)
+            {
+                services.AddScoped(repository);
             }
 
             return services;
@@ -42,79 +56,102 @@ namespace Taime.Application.Utils.Extensions
             return services.FirstOrDefault(s => s.ServiceType == typeof(T)) != null;
         }
 
-        public static IServiceCollection AddDynamicScope(this IServiceCollection services, Type type)
-        {
-            if (type.IsAbstract)
-                return services;
+        //public static IServiceCollection AddBaseServices(this IServiceCollection services)
+        //{
+        //    IEnumerable<Type> enumerable = ReflectionHelper.ListClassesInherit(typeof(BaseService));
+        //    foreach (var item in enumerable)
+        //    {
+        //        services.AddDynamicScope(item);
+        //    }
 
-            var repositoryInterface = type.GetInterface($"I{type.Name}", true);
-            if (repositoryInterface == null)
-            {
-                switch (GetInjectionType(type))
-                {
-                    case InjectionType.Scoped:
-                        services.AddScoped(type);
-                        break;
+        //    Type repositoryType = typeof(IRepositoryBase<>);
+        //    IEnumerable<Type> enumerable2 = from t in ReflectionHelper.ListClassesImplementsFromGeneric(repositoryType) where t.IsConcrete() select t;
+        //    foreach (var item in enumerable2)
+        //    {
+        //        Type serviceType = item.GetInterfaces().FirstOrDefault((i) => i.IsGenericType && i.GetGenericTypeDefinition() == repositoryType);
+        //        InjectionType injectionType = GetInjectionType(item);
+        //        if (injectionType == InjectionType.Scoped)
+        //            services.AddScoped(serviceType, item);
+        //        else
+        //            services.AddSingleton(serviceType, item);
+        //    }
 
-                    default:
-                        services.AddSingleton(type);
-                        break;
-                }
-            }
-            else
-            {
-                switch (GetInjectionType(type))
-                {
-                    case InjectionType.Scoped:
-                        services.AddScoped(repositoryInterface, type);
-                        services.AddScoped(type);
-                        break;
+        //    return services;
+        //}
 
-                    default:
-                        services.AddSingleton(repositoryInterface, type);
-                        services.AddSingleton(type);
-                        break;
-                }
+        //public static IServiceCollection AddDynamicScope(this IServiceCollection services, Type type)
+        //{
+        //    if (type.IsAbstract)
+        //        return services;
 
-                services.AddDecorators(repositoryInterface, type);
-            }
+        //    var repositoryInterface = type.GetInterface($"I{type.Name}", true);
+        //    if (repositoryInterface == null)
+        //    {
+        //        switch (GetInjectionType(type))
+        //        {
+        //            case InjectionType.Scoped:
+        //                services.AddScoped(type);
+        //                break;
 
-            return services;
-        }
+        //            default:
+        //                services.AddSingleton(type);
+        //                break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        switch (GetInjectionType(type))
+        //        {
+        //            case InjectionType.Scoped:
+        //                services.AddScoped(repositoryInterface, type);
+        //                services.AddScoped(type);
+        //                break;
 
-        public static IServiceCollection AddDecorators(this IServiceCollection services, Type interfaceType, Type implementationType)
-        {
-            var decorators = ReflectionHelper.ListClassesImplements(interfaceType).Where(p => p.Name.StartsWith($"{implementationType.Name}Decorator"));
-            foreach (var decorator in decorators)
-            {
-                services.AddDecorators(interfaceType, decorator);
-            }
+        //            default:
+        //                services.AddSingleton(repositoryInterface, type);
+        //                services.AddSingleton(type);
+        //                break;
+        //        }
 
-            return services;
-        }
+        //        services.AddDecorators(repositoryInterface, type);
+        //    }
 
-        public static IServiceCollection AddMySql(this IServiceCollection services, string mySqlContext)
-        {
-            if (string.IsNullOrWhiteSpace(mySqlContext))
-                throw new ArgumentNullException("'MySqlContext' deve ser informado.");
+        //    return services;
+        //}
 
-            services.AddDbContext<MySqlProvider>(options => options.UseMySql(mySqlContext, ServerVersion.AutoDetect(mySqlContext)));
-            var repositories = ReflectionHelper.ListClassesInherit(typeof(RepositoryBase));
-            foreach (Type repository in repositories)
-            {
-                services.AddDynamicScope(repository);
-            }
+        //public static IServiceCollection AddDecorators(this IServiceCollection services, Type interfaceType, Type implementationType)
+        //{
+        //    var decorators = ReflectionHelper.ListClassesImplements(interfaceType).Where(p => p.Name.StartsWith($"{implementationType.Name}Decorator"));
+        //    foreach (var decorator in decorators)
+        //    {
+        //        services.AddDecorators(interfaceType, decorator);
+        //    }
 
-            return services;
-        }
+        //    return services;
+        //}
 
-        public static InjectionType GetInjectionType(Type type)
-        {
-            var injectAttr = type.GetCustomAttribute<InjectionTypeAttribute>();
-            if (injectAttr == null)
-                return InjectionType.Singleton;
+        //public static IServiceCollection AddMySql(this IServiceCollection services, string mySqlContext)
+        //{
+        //    if (string.IsNullOrWhiteSpace(mySqlContext))
+        //        throw new ArgumentNullException("'MySqlContext' deve ser informado.");
 
-            return injectAttr.InjectionType;
-        }
+        //    services.AddDbContext<MySqlContext>(options => options.UseMySql(mySqlContext, ServerVersion.AutoDetect(mySqlContext)));
+        //    var repositories = ReflectionHelper.ListClassesInherit(typeof(RepositoryBase));
+        //    foreach (Type repository in repositories)
+        //    {
+        //        services.AddDynamicScope(repository);
+        //    }
+
+        //    return services;
+        //}
+
+        //public static InjectionType GetInjectionType(Type type)
+        //{
+        //    var injectAttr = type.GetCustomAttribute<InjectionTypeAttribute>();
+        //    if (injectAttr == null)
+        //        return InjectionType.Singleton;
+
+        //    return injectAttr.InjectionType;
+        //}
     }
 }
