@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Taime.Application.Contracts;
+using Taime.Application.Contracts.Auth;
 using Taime.Application.Enums;
 
 namespace Taime.Application.Validators

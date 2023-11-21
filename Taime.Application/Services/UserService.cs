@@ -1,4 +1,4 @@
-using Taime.Application.Contracts;
+using Taime.Application.Contracts.Auth;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
 using Taime.Application.Enums;
@@ -70,6 +70,12 @@ namespace Taime.Application.Services
             user.Password = null;
 
             return SuccessData(AuthorizationHelper.GenerateToken(user, _settings));
+        }
+
+        public async Task<ResultData> RefreshToken(RefreshRequest request)
+        {
+            // TODO
+            return await Task.FromResult(SuccessData());
         }
     }
 }

@@ -1,12 +1,9 @@
 using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Services;
 using Taime.Application.Helpers;
-using Microsoft.AspNetCore.Authorization;
-using Taime.Application.Contracts;
+using Taime.Application.Contracts.Auth;
 
 namespace Taime.API.Controllers.v1
 {
@@ -29,6 +26,16 @@ namespace Taime.API.Controllers.v1
         public async Task<IActionResult> Login([FromQuery] LoginRequest request)
         {
             var response = await _userService.Login(request);
+            return HttpHelper.Convert(response);
+        }
+
+        [HttpGet("refresh")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        public async Task<IActionResult> Refresh([FromQuery] RefreshRequest request)
+        {
+            var response = await _userService.RefreshToken(request);
             return HttpHelper.Convert(response);
         }
     }

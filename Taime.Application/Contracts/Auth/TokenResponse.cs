@@ -1,4 +1,4 @@
-﻿namespace Taime.Application.Contracts
+﻿namespace Taime.Application.Contracts.Auth
 {
     public class TokenResponse
     {
