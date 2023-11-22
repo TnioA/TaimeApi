@@ -33,6 +33,24 @@ namespace Taime.Application.Enums
         /// Produto não encontrado.
         /// </summary>
         [Description("Produto não encontrado.")]
-        TaimeApi_Post_400_Product_Not_Found
+        TaimeApi_Post_400_Product_Not_Found,
+
+        /// <summary>
+        /// Marca não encontrada.
+        /// </summary>
+        [Description("Marca não encontrada.")]
+        TaimeApi_Post_400_Brand_Not_Found,
+
+        /// <summary>
+        /// Categoria não encontrada.
+        /// </summary>
+        [Description("Categoria não encontrada.")]
+        TaimeApi_Post_400_Category_Not_Found,
+
+        /// <summary>
+        /// Coleção não encontrada.
+        /// </summary>
+        [Description("Coleção não encontrada.")]
+        TaimeApi_Post_400_Collection_Not_Found,
     }
 }

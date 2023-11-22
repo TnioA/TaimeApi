@@ -4,8 +4,8 @@ using Taime.Application.Utils.Data.MySql;
 
 namespace Taime.Application.Data.MySql.Entities
 {
-    [Table("user")]
-    public class UserEntity : MySqlEntityBase
+    [Table("review")]
+    public class ReviewEntity : MySqlEntityBase
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
@@ -17,16 +17,13 @@ namespace Taime.Application.Data.MySql.Entities
         [Column("email")]
         public string Email { get; set; }
 
-        [Column("document")]
-        public string Document { get; set; }
+        [Column("comment")]
+        public string Comment { get; set; }
 
-        [Column("phone")]
-        public string Phone { get; set; }
+        [Column("evaluation")]
+        public int Evaluation { get; set; }
 
-        [Column("password")]
-        public string Password { get; set; }
-
-        [Column("is_admin")]
-        public bool IsAdmin { get; set; }
+        [Column("product_id")]
+        public int ProductId { get; set; }
     }
 }

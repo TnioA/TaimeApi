@@ -12,65 +12,65 @@ namespace Taime.API.Controllers.v1
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/[controller]")]
-    public class ProductController : ControllerBase
+    public class CollectionController : ControllerBase
     {
-        public readonly ProductService _productService;
+        public readonly CollectionService _collectionService;
 
-        public ProductController(ProductService productService)
+        public CollectionController(CollectionService collectionService)
         {
-            _productService = productService;
+            _collectionService = collectionService;
         }
 
         /// <summary>
-        /// Obtém todos os produtos
+        /// Obtém todas as coleções
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para obter os produtos
+        /// Exemplo de requisição para obter as coleções
         ///
         ///     Request:
-        ///     GET v1/product
+        ///     GET v1/collection
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
-        /// <returns>Retorno dos produtos</returns>
+        /// <returns>Retorno das coleções</returns>
         [HttpGet]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
         public async Task<IActionResult> Get()
         {
-            var response = await _productService.GetAll();
+            var response = await _collectionService.GetAll();
             return HttpHelper.Convert(response);
         }
 
         /// <summary>
-        /// Obtém um produto por id
+        /// Obtém uma coleção por id
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para obter um produto por id
+        /// Exemplo de requisição para obter uma coleção por id
         ///
         ///     Request:
-        ///     GET v1/product/123
+        ///     GET v1/collection/123
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
-        /// <returns>Retorno do produto</returns>
+        /// <returns>Retorno da coleção</returns>
         [HttpGet("{id}")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var response = await _productService.GetById(id);
+            var response = await _collectionService.GetById(id);
             return HttpHelper.Convert(response);
         }
 
         /// <summary>
-        /// Cria um novo produto
+        /// Cria uma nova coleção
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para criar um produto
+        /// Exemplo de requisição para criar uma coleção
         ///
         ///     Request:
-        ///     POST v1/product
+        ///     POST v1/collection
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno de sucesso</returns>
@@ -80,20 +80,20 @@ namespace Taime.API.Controllers.v1
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
-        public async Task<IActionResult> Create([FromBody] ProductEntity request)
+        public async Task<IActionResult> Create([FromBody] CollectionEntity request)
         {
-            var response = await _productService.Create(request);
+            var response = await _collectionService.Create(request);
             return HttpHelper.Convert(response);
         }
 
         /// <summary>
-        /// Remove um produto existente
+        /// Remove uma coleção existente
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para remover um produto
+        /// Exemplo de requisição para remover uma coleção
         ///
         ///     Request:
-        ///     DELETE v1/product/123
+        ///     DELETE v1/collection/123
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno de sucesso</returns>
@@ -105,7 +105,7 @@ namespace Taime.API.Controllers.v1
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
-            var response = await _productService.Remove(id);
+            var response = await _collectionService.Remove(id);
             return HttpHelper.Convert(response);
         }
     }

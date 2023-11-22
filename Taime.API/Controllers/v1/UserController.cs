@@ -5,6 +5,7 @@ using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Services;
 using Taime.Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Taime.Application.Constants;
 
 namespace Taime.API.Controllers.v1
 {
@@ -21,18 +22,19 @@ namespace Taime.API.Controllers.v1
         }
 
         /// <summary>
-        /// Obtem todos os usuários
+        /// Obtém todos os usuários
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para obter os usuários.
+        /// Exemplo de requisição para obter os usuários
         ///
         ///     Request:
-        ///     GET v1/users
+        ///     GET v1/user
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno dos usuários</returns>
         [HttpGet()]
-        [Authorize(Roles = "Admin")] // deve ser adicionado as regras aceitas separados por virgula exemplo [Authorize(Roles = "Regra1,Regra2,Regra3")]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
@@ -43,19 +45,19 @@ namespace Taime.API.Controllers.v1
         }
 
         /// <summary>
-        /// Obtem um usuário por id
+        /// Obtém um usuário por id
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para obter um usuário por id.
+        /// Exemplo de requisição para obter um usuário por id
         ///
         ///     Request:
-        ///     GET v1/users/1
+        ///     GET v1/user/123
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno do usuário</returns>
-        /// 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")] // deve ser adicionado as regras aceitas separados por virgula exemplo [Authorize(Roles = "Regra1,Regra2,Regra3")]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
@@ -65,6 +67,17 @@ namespace Taime.API.Controllers.v1
             return HttpHelper.Convert(response);
         }
 
+        /// <summary>
+        /// Cria um novo usuário
+        /// </summary>
+        /// <remarks>
+        /// Exemplo de requisição para criar um usuário
+        ///
+        ///     Request:
+        ///     POST v1/user
+        /// </remarks>
+        /// <response code="200">Retorno de sucesso</response>
+        /// <returns>Retorno de sucesso</returns>
         [HttpPost()]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
@@ -75,8 +88,20 @@ namespace Taime.API.Controllers.v1
             return HttpHelper.Convert(response);
         }
 
+        /// <summary>
+        /// Remove um usuário existente
+        /// </summary>
+        /// <remarks>
+        /// Exemplo de requisição para remover um usuário
+        ///
+        ///     Request:
+        ///     DELETE v1/user/123
+        /// </remarks>
+        /// <response code="200">Retorno de sucesso</response>
+        /// <returns>Retorno de sucesso</returns>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")] // deve ser adicionado as regras aceitas separados por virgula exemplo [Authorize(Roles = "Regra1,Regra2,Regra3")]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]

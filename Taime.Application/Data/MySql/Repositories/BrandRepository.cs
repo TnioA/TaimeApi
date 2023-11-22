@@ -3,8 +3,8 @@ using Taime.Application.Utils.Data.MySql;
 
 namespace Taime.Application.Data.MySql.Repositories
 {
-    public class UserRepository : MySqlRepositoryBase<UserEntity>
+    public class BrandRepository : MySqlRepositoryBase<BrandEntity>
     {
-        public UserRepository(MySqlContext mySqlContext) : base(mySqlContext) { }
+        public BrandRepository(MySqlContext mySqlContext) : base(mySqlContext) { }
     }
 }

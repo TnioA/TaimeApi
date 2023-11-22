@@ -11,7 +11,34 @@ namespace Taime.Application.Data.MySql.Entities
         [Column("id")]
         public int Id { get; set; }
 
+        [Column("title")]
+        public string Title { get; set; }
+
         [Column("description")]
         public string Description { get; set; }
+
+        [Column("details")]
+        public string Details { get; set; }
+
+        [Column("url")]
+        public string Url { get; set; }
+
+        [Column("price")]
+        public decimal Price { get; set; }
+
+        [Column("lastPrice")]
+        public decimal LastPrice { get; set; }
+
+        [Column("unity_count")]
+        public string UnityCount { get; set; }
+
+        [Column("category_id")]
+        public Guid CategoryId { get; set; }
+
+        [Column("brand_id")]
+        public Guid BrandId { get; set; }
+
+        [Column("collection_id")]
+        public Guid CollectionId { get; set; }
     }
 }
