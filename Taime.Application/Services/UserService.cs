@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
+using Taime.Application.Constants;
 using Taime.Application.Contracts.Auth;
 using Taime.Application.Contracts.Shared;
+using Taime.Application.Contracts.User;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
 using Taime.Application.Enums;
@@ -24,7 +27,7 @@ namespace Taime.Application.Services
         public async Task<ResultData> GetAll()
         {
             var data = await _userRepository.ReadAsync();
-            return SuccessData(data);
+            return SuccessData(data.Select(x => new UserResponse(x)).ToList());
         }
 
         public async Task<ResultData> GetById(int id)
@@ -33,16 +36,16 @@ namespace Taime.Application.Services
             if (data == null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_User_Not_Found);
 
-            return SuccessData(data);
+            return SuccessData(new UserResponse(data));
         }
 
-        public async Task<ResultData> Create(UserEntity request)
+        public async Task<ResultData> Create(UserRequest request)
         {
             UserEntity user = await _userRepository.ReadFirstOrDefaultAsync(x => x.Email == request.Email);
-            if (user == null)
+            if (user != null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_User_Already_Exists);
 
-            await _userRepository.CreateAsync(request);
+            await _userRepository.CreateAsync(new UserEntity(request));
             return SuccessData();
         }
 
@@ -68,13 +71,35 @@ namespace Taime.Application.Services
 
             user.Password = null;
 
-            return SuccessData(AuthorizationHelper.GenerateToken(user, _settings));
+            var response = new TokenResponse()
+            {
+                AccessToken = AuthorizationHelper.GenerateAccessToken(user, _settings),
+                ExpiresIn = _settings.JWTAccessTokenExpirationTime,
+                RefreshToken = AuthorizationHelper.GenerateRefreshToken(user, _settings),
+                TokenType = "Bearer"
+            };
+
+            return SuccessData(response);
         }
 
-        public async Task<ResultData> RefreshToken(RefreshRequest request)
+        public async Task<ResultData> RefreshToken(string userId)
         {
-            // TODO
-            return await Task.FromResult(SuccessData());
+            var convertedUserId = HashIdHelper.Decode(userId);
+            UserEntity user = await _userRepository.ReadFirstOrDefaultAsync(x => x.Id == convertedUserId);
+            if (user == null)
+                return null;
+
+            user.Password = null;
+
+            var response = new TokenResponse()
+            {
+                AccessToken = AuthorizationHelper.GenerateAccessToken(user, _settings),
+                ExpiresIn = _settings.JWTAccessTokenExpirationTime,
+                RefreshToken = AuthorizationHelper.GenerateRefreshToken(user, _settings),
+                TokenType = AuthConstants.DEFAULT_AUTH_TOKEN_FORMAT
+            };
+
+            return SuccessData(response);
         }
     }
 }

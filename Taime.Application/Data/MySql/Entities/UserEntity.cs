@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Taime.Application.Contracts.User;
 using Taime.Application.Utils.Data.MySql;
 
 namespace Taime.Application.Data.MySql.Entities
@@ -28,5 +29,17 @@ namespace Taime.Application.Data.MySql.Entities
 
         [Column("is_admin")]
         public bool IsAdmin { get; set; }
+
+        public UserEntity() { }
+
+        public UserEntity(UserRequest request) 
+        {
+            Name = request.Name;
+            Email = request.Email;
+            Document = request.Document;
+            Phone = request.Phone;
+            Password = request.Password;
+            IsAdmin = false;
+        }
     }
 }

@@ -37,7 +37,7 @@ var settings = new AppSettings();
 builder.Services.AddSingleton(settings);
 
 // Set Authentication
-var key = Encoding.ASCII.GetBytes(settings.JWTAuthorizationToken);
+var key = Encoding.ASCII.GetBytes(settings.JWTAuthorizationKey);
 builder.Services.AddAuthentication(configureOptions =>
 {
     configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,7 +51,10 @@ builder.Services.AddAuthentication(configureOptions =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateAudience = false,
+        RequireExpirationTime = true,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
     };
 });
 

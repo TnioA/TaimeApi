@@ -6,6 +6,8 @@ using Taime.Application.Services;
 using Taime.Application.Helpers;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Constants;
+using Taime.Application.Contracts.Shared;
+using Taime.Application.Contracts.Category;
 
 namespace Taime.API.Controllers.v1
 {
@@ -33,9 +35,9 @@ namespace Taime.API.Controllers.v1
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno das categorias</returns>
         [HttpGet]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<List<CategoryResponse>>)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> Get()
         {
             var response = await _categoryService.GetAll();
@@ -54,9 +56,9 @@ namespace Taime.API.Controllers.v1
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno da categoria</returns>
         [HttpGet("{id}")]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<CategoryResponse>)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var response = await _categoryService.GetById(id);
@@ -77,10 +79,10 @@ namespace Taime.API.Controllers.v1
         [HttpPost()]
         //[ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
-        public async Task<IActionResult> Create([FromBody] CategoryEntity request)
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
+        public async Task<IActionResult> Create([FromBody] CategoryRequest request)
         {
             var response = await _categoryService.Create(request);
             return HttpHelper.Convert(response);
@@ -100,9 +102,9 @@ namespace Taime.API.Controllers.v1
         [HttpDelete("{id}")]
         //[ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
             var response = await _categoryService.Remove(id);

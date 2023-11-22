@@ -4,16 +4,19 @@ namespace Taime.Application.Settings
 {
     public class AppSettings
     {
-        public string JWTAuthorizationToken { get; set; }
+        public string JWTAuthorizationKey { get; set; }
         
-        public int JWTTokenExpirationTime { get; set; }
-        
+        public int JWTAccessTokenExpirationTime { get; set; }
+
+        public int JWTRefreshTokenExpirationTime { get; set; }
+
         public string MySqlConnectionString { get; set; }
 
         public AppSettings()
         {
-            JWTAuthorizationToken = GetValueFromEnv<string>("JWT_AUTH_TOKEN");
-            JWTTokenExpirationTime = GetValueFromEnv<int>("JWT_TOKEN_EXPIRATION_TIME");
+            JWTAuthorizationKey = GetValueFromEnv<string>("JWT_AUTH_KEY");
+            JWTAccessTokenExpirationTime = GetValueFromEnv<int>("JWT_ACCESS_TOKEN_EXPIRATION_TIME");
+            JWTRefreshTokenExpirationTime = GetValueFromEnv<int>("JWT_REFRESH_TOKEN_EXPIRATION_TIME");
             MySqlConnectionString = GetValueFromEnv<string>("KEY_MYSQL_CONN_STR");
         }
     }

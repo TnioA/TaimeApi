@@ -6,6 +6,9 @@ namespace Taime.Application.Data.MySql
     public class MySqlContext : DbContext
     {
         public virtual DbSet<UserEntity> Users { get; set; }
+        public virtual DbSet<BrandEntity> Brands { get; set; }
+        public virtual DbSet<CategoryEntity> Categories { get; set; }
+        public virtual DbSet<CollectionEntity> Collections { get; set; }
         public virtual DbSet<ProductEntity> Products { get; set; }
 
         public MySqlContext() { }

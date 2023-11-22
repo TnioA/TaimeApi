@@ -6,6 +6,8 @@ using Taime.Application.Services;
 using Taime.Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Taime.Application.Constants;
+using Taime.Application.Contracts.Shared;
+using Taime.Application.Contracts.User;
 
 namespace Taime.API.Controllers.v1
 {
@@ -35,9 +37,9 @@ namespace Taime.API.Controllers.v1
         [HttpGet()]
         //[ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<List<UserResponse>>)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> GetAll()
         {
             var response = await _userService.GetAll();
@@ -57,10 +59,10 @@ namespace Taime.API.Controllers.v1
         /// <returns>Retorno do usuário</returns>
         [HttpGet("{id}")]
         //[ApiExplorerSettings(IgnoreApi = true)]
-        [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        [Authorize("Bearer", Roles = AuthConstants.AUTH_ADMIN_ROLE)]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<UserResponse>)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var response = await _userService.GetById(id);
@@ -79,10 +81,10 @@ namespace Taime.API.Controllers.v1
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno de sucesso</returns>
         [HttpPost()]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
-        public async Task<IActionResult> Create([FromBody] UserEntity request)
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
+        public async Task<IActionResult> Create([FromBody] UserRequest request)
         {
             var response = await _userService.Create(request);
             return HttpHelper.Convert(response);
@@ -102,9 +104,9 @@ namespace Taime.API.Controllers.v1
         [HttpDelete("{id}")]
         //[ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(object)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(object))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData)),
+        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
+        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
             var response = await _userService.Remove(id);

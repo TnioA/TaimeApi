@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Taime.Application.Contracts.Product;
 using Taime.Application.Utils.Data.MySql;
 
 namespace Taime.Application.Data.MySql.Entities
@@ -33,12 +34,28 @@ namespace Taime.Application.Data.MySql.Entities
         public string UnityCount { get; set; }
 
         [Column("category_id")]
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
         [Column("brand_id")]
-        public Guid BrandId { get; set; }
+        public int BrandId { get; set; }
 
         [Column("collection_id")]
-        public Guid CollectionId { get; set; }
+        public int CollectionId { get; set; }
+
+        public ProductEntity() { }
+
+        public ProductEntity(ProductRequest request) 
+        {
+            Title = request.Title;
+            Description = request.Description;
+            Details = request.Details;
+            Url = request.Url;
+            Price = request.Price;
+            LastPrice = request.LastPrice;
+            UnityCount = request.UnityCount;
+            CategoryId = request.CategoryId;
+            BrandId = request.BrandId;
+            CollectionId = request.CollectionId;
+        }
     }
 }

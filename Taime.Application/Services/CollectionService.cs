@@ -1,3 +1,4 @@
+using Taime.Application.Contracts.Collection;
 using Taime.Application.Contracts.Shared;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
@@ -18,7 +19,7 @@ namespace Taime.Application.Services
         public async Task<ResultData> GetAll()
         {
             var data = await _collectionRepository.ReadAsync();
-            return SuccessData(data);
+            return SuccessData(data.Select(x => new CollectionResponse(x)).ToList());
         }
 
         public async Task<ResultData> GetById(int id)
@@ -27,12 +28,12 @@ namespace Taime.Application.Services
             if (data == null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_Collection_Not_Found);
 
-            return SuccessData(data);
+            return SuccessData(new CollectionResponse(data));
         }
 
-        public async Task<ResultData> Create(CollectionEntity request)
+        public async Task<ResultData> Create(CollectionRequest request)
         {
-            await _collectionRepository.CreateAsync(request);
+            await _collectionRepository.CreateAsync(new CollectionEntity(request));
             return SuccessData();
         }
 

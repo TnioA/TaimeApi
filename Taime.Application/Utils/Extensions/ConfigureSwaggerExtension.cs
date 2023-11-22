@@ -28,7 +28,7 @@ namespace Taime.Application.Utils.Extensions
 
         private OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
         {
-            var info = new OpenApiInfo() { Title = "Taime API", Version = description.ApiVersion.ToString() };
+            var info = new OpenApiInfo() { Title = $"Taime API {description.ApiVersion}", Version = description.ApiVersion.ToString() };
             if (description.IsDeprecated)
                 info.Description += " This API version has been deprecated.";
             

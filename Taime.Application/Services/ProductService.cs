@@ -1,3 +1,4 @@
+using Taime.Application.Contracts.Product;
 using Taime.Application.Contracts.Shared;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
@@ -18,7 +19,7 @@ namespace Taime.Application.Services
         public async Task<ResultData> GetAll()
         {
             var data = await _productRepository.ReadAsync();
-            return SuccessData(data);
+            return SuccessData(data.Select(x => new ProductResponse(x)).ToList());
         }
 
         public async Task<ResultData> GetById(int id)
@@ -27,12 +28,12 @@ namespace Taime.Application.Services
             if (data == null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_Product_Not_Found);
 
-            return SuccessData(data);
+            return SuccessData(new ProductResponse(data));
         }
 
-        public async Task<ResultData> Create(ProductEntity request)
+        public async Task<ResultData> Create(ProductRequest request)
         {
-            await _productRepository.CreateAsync(request);
+            await _productRepository.CreateAsync(new ProductEntity(request));
             return SuccessData();
         }
 

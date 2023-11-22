@@ -1,7 +1,11 @@
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
+using Taime.Application.Constants;
 using Taime.Application.Contracts.Auth;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Settings;
@@ -10,30 +14,46 @@ namespace Taime.Application.Helpers
 {
     public static class AuthorizationHelper
     {
-        public static TokenResponse GenerateToken(UserEntity userEntity, AppSettings settings)
+        public static string GenerateAccessToken(UserEntity userEntity, AppSettings settings)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(settings.JWTAuthorizationToken);
+            var key = Encoding.ASCII.GetBytes(settings.JWTAuthorizationKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+                    new Claim(JwtRegisteredClaimNames.Sub, HashIdHelper.Encode(userEntity.Id)),
                     new Claim(ClaimTypes.Name, userEntity.Name),
-                    new Claim(ClaimTypes.Role, userEntity.IsAdmin ? "Admin" : "Default"),
+                    new Claim(ClaimTypes.Email, userEntity.Email),
+                    new Claim(ClaimTypes.Role, userEntity.IsAdmin ? "Admin" : "Default")
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(settings.JWTTokenExpirationTime),
+                Expires = DateTime.UtcNow.AddSeconds(settings.JWTAccessTokenExpirationTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenResult = new TokenResponse()
+            var accessToken = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(accessToken);
+        }
+
+        public static string GenerateRefreshToken(UserEntity userEntity, AppSettings settings)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(settings.JWTAuthorizationKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                AccessToken = tokenHandler.WriteToken(token),
-                ExpiresIn = settings.JWTTokenExpirationTime,
-                TokenType = "Bearer"
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, HashIdHelper.Encode(userEntity.Id)),
+                    new Claim(ClaimTypes.Role, AuthConstants.AUTH_REFRESH_ROLE)
+                }),
+                Expires = DateTime.UtcNow.AddSeconds(settings.JWTAccessTokenExpirationTime),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            return tokenResult;
+            var refreshToken = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(refreshToken);
         }
     }
 }

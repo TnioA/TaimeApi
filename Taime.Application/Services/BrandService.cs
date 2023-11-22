@@ -1,3 +1,4 @@
+using Taime.Application.Contracts.Brand;
 using Taime.Application.Contracts.Shared;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
@@ -18,7 +19,7 @@ namespace Taime.Application.Services
         public async Task<ResultData> GetAll()
         {
             var data = await _brandRepository.ReadAsync();
-            return SuccessData(data);
+            return SuccessData(data.Select(x => new BrandResponse(x)).ToList());
         }
 
         public async Task<ResultData> GetById(int id)
@@ -27,12 +28,12 @@ namespace Taime.Application.Services
             if (data == null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_Brand_Not_Found);
 
-            return SuccessData(data);
+            return SuccessData(new BrandResponse(data));
         }
 
-        public async Task<ResultData> Create(BrandEntity request)
+        public async Task<ResultData> Create(BrandRequest request)
         {
-            await _brandRepository.CreateAsync(request);
+            await _brandRepository.CreateAsync(new BrandEntity(request));
             return SuccessData();
         }
 

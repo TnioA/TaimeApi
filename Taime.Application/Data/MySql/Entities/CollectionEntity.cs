@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Taime.Application.Contracts.Collection;
 using Taime.Application.Utils.Data.MySql;
 
 namespace Taime.Application.Data.MySql.Entities
@@ -16,5 +17,13 @@ namespace Taime.Application.Data.MySql.Entities
 
         [Column("url")]
         public string Url { get; set; }
+
+        public CollectionEntity() { }
+
+        public CollectionEntity(CollectionRequest request) 
+        { 
+            Title = request.Title;
+            Url = request.Url;
+        }
     }
 }

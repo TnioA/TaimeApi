@@ -1,3 +1,4 @@
+using Taime.Application.Contracts.Category;
 using Taime.Application.Contracts.Shared;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
@@ -18,7 +19,7 @@ namespace Taime.Application.Services
         public async Task<ResultData> GetAll()
         {
             var data = await _categoryRepository.ReadAsync();
-            return SuccessData(data);
+            return SuccessData(data.Select(x => new CategoryResponse(x)).ToList());
         }
 
         public async Task<ResultData> GetById(int id)
@@ -27,12 +28,12 @@ namespace Taime.Application.Services
             if (data == null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_Category_Not_Found);
 
-            return SuccessData(data);
+            return SuccessData(new CategoryResponse(data));
         }
 
-        public async Task<ResultData> Create(CategoryEntity request)
+        public async Task<ResultData> Create(CategoryRequest request)
         {
-            await _categoryRepository.CreateAsync(request);
+            await _categoryRepository.CreateAsync(new CategoryEntity(request));
             return SuccessData();
         }
 
