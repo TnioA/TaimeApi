@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 using Taime.Application.Constants;
 using Taime.Application.Contracts.Auth;
 using Taime.Application.Contracts.Shared;
@@ -6,6 +9,7 @@ using Taime.Application.Contracts.User;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
 using Taime.Application.Enums;
+using Taime.Application.Extensions;
 using Taime.Application.Helpers;
 using Taime.Application.Settings;
 using Taime.Application.Utils.Services;
@@ -45,6 +49,8 @@ namespace Taime.Application.Services
             if (user != null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_User_Already_Exists);
 
+            request.Password = StringExtension.HashPassword(request.Password);
+
             await _userRepository.CreateAsync(new UserEntity(request));
             return SuccessData();
         }
@@ -65,6 +71,7 @@ namespace Taime.Application.Services
             if (!validationResult.IsValid)
                 return ErrorData<TaimeApiErrors>(validationResult.Errors[0].ErrorCode);
 
+            request.Password = StringExtension.HashPassword(request.Password);
             UserEntity user = await _userRepository.ReadFirstOrDefaultAsync(x => x.Email == request.Email && x.Password == request.Password);
             if (user == null)
                 return ErrorData(TaimeApiErrors.TaimeApi_Post_400_User_Not_Found);

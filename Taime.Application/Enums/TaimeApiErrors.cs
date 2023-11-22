@@ -52,5 +52,11 @@ namespace Taime.Application.Enums
         /// </summary>
         [Description("Coleção não encontrada.")]
         TaimeApi_Post_400_Collection_Not_Found,
+
+        /// <summary>
+        /// Transação não encontrada.
+        /// </summary>
+        [Description("Transação não encontrada.")]
+        TaimeApi_Post_400_Transaction_Not_Found,
     }
 }

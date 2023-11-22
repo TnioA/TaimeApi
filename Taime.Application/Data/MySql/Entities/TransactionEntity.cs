@@ -23,9 +23,6 @@ namespace Taime.Application.Data.MySql.Entities
         [Column("shipping_value")]
         public decimal ShippingValue { get; set; }
 
-        [Column("shipping_address")]
-        public string ShippingAddress { get; set; }
-
         [Column("sub_total_value")]
         public decimal SubTotalValue { get; set; }
 

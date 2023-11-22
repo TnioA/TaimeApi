@@ -6,76 +6,77 @@ using Taime.Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Taime.Application.Constants;
 using Taime.Application.Contracts.Shared;
-using Taime.Application.Contracts.User;
+using Taime.Application.Contracts.Transaction;
+using System.Security.Claims;
 
 namespace Taime.API.Controllers.v1
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/[controller]")]
-    public class UserController : ControllerBase
+    public class TransactionController : ControllerBase
     {
-        public readonly UserService _userService;
+        public readonly TransactionService _transactionService;
 
-        public UserController(UserService userService)
+        public TransactionController(TransactionService transactionService)
         {
-            _userService = userService;
+            _transactionService = transactionService;
         }
 
         /// <summary>
-        /// Obtém todos os usuários
+        /// Obtém todas as transações
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para obter os usuários
+        /// Exemplo de requisição para obter as transações
         ///
         ///     Request:
-        ///     GET v1/user
+        ///     GET v1/transaction
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
-        /// <returns>Retorno dos usuários</returns>
+        /// <returns>Retorno das transações</returns>
         [HttpGet()]
         //[ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<List<UserResponse>>)),
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<List<TransactionResponse>>)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _userService.GetAll();
+            var response = await _transactionService.GetAll();
             return HttpHelper.Convert(response);
         }
 
         /// <summary>
-        /// Obtém um usuário por id
+        /// Obtém uma transação por id
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para obter um usuário por id
+        /// Exemplo de requisição para obter uma transação por id
         ///
         ///     Request:
-        ///     GET v1/user/123
+        ///     GET v1/transaction/123
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno do usuário</returns>
         [HttpGet("{id}")]
         //[ApiExplorerSettings(IgnoreApi = true)]
-        [Authorize("Bearer", Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<UserResponse>)),
+        [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData<TransactionResponse>)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var response = await _userService.GetById(id);
+            var response = await _transactionService.GetById(id);
             return HttpHelper.Convert(response);
         }
 
         /// <summary>
-        /// Cria um novo usuário
+        /// Cria uma nova transação
         /// </summary>
         /// <remarks>
-        /// Exemplo de requisição para criar um usuário
+        /// Exemplo de requisição para criar uma transação
         ///
         ///     Request:
-        ///     POST v1/user
+        ///     POST v1/transaction
         /// </remarks>
         /// <response code="200">Retorno de sucesso</response>
         /// <returns>Retorno de sucesso</returns>
@@ -83,32 +84,12 @@ namespace Taime.API.Controllers.v1
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData)),
         SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
         SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
-        public async Task<IActionResult> Create([FromBody] UserRequest request)
+        public async Task<IActionResult> Create([FromBody] TransactionRequest request)
         {
-            var response = await _userService.Create(request);
-            return HttpHelper.Convert(response);
-        }
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        /// <summary>
-        /// Remove um usuário existente
-        /// </summary>
-        /// <remarks>
-        /// Exemplo de requisição para remover um usuário
-        ///
-        ///     Request:
-        ///     DELETE v1/user/123
-        /// </remarks>
-        /// <response code="200">Retorno de sucesso</response>
-        /// <returns>Retorno de sucesso</returns>
-        [HttpDelete("{id}")]
-        //[ApiExplorerSettings(IgnoreApi = true)]
-        [Authorize(Roles = AuthConstants.AUTH_ADMIN_ROLE)]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ResultData)),
-        SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ErrorData)),
-        SwaggerResponse((int)HttpStatusCode.Unauthorized, Type = typeof(ErrorData))]
-        public async Task<IActionResult> Remove([FromRoute] int id)
-        {
-            var response = await _userService.Remove(id);
+            var response = await _transactionService.Create(request, userId);
             return HttpHelper.Convert(response);
         }
     }
