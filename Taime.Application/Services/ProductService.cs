@@ -1,12 +1,11 @@
+using Taime.Application.Contracts.Shared;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
 using Taime.Application.Enums;
-using Taime.Application.Utils.Attributes;
 using Taime.Application.Utils.Services;
 
 namespace Taime.Application.Services
 {
-    [InjectionType(InjectionType.Scoped)]
     public class ProductService : BaseService
     {
         private readonly ProductRepository _productRepository;

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using Taime.Application.Contracts.Shared;
 using Taime.Application.Utils.Services;
 
 namespace Taime.Application.Extensions

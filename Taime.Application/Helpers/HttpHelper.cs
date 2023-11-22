@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Net;
-using Taime.Application.Utils.Services;
+using Taime.Application.Contracts.Shared;
 
 namespace Taime.Application.Helpers
 {

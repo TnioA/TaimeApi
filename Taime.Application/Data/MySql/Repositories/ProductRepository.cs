@@ -4,7 +4,6 @@ using Taime.Application.Utils.Data.MySql;
 
 namespace Taime.Application.Data.MySql.Repositories
 {
-    [InjectionType(InjectionType.Scoped)]
     public class ProductRepository : MySqlRepositoryBase<ProductEntity>
     {
         public ProductRepository(MySqlContext mySqlContext) : base(mySqlContext) { }

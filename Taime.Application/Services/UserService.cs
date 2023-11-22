@@ -1,16 +1,15 @@
 using Taime.Application.Contracts.Auth;
+using Taime.Application.Contracts.Shared;
 using Taime.Application.Data.MySql.Entities;
 using Taime.Application.Data.MySql.Repositories;
 using Taime.Application.Enums;
 using Taime.Application.Helpers;
 using Taime.Application.Settings;
-using Taime.Application.Utils.Attributes;
 using Taime.Application.Utils.Services;
 using Taime.Application.Validators;
 
 namespace Taime.Application.Services
 {
-    [InjectionType(InjectionType.Scoped)]
     public class UserService : BaseService
     {
         private readonly UserRepository _userRepository;
